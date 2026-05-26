@@ -33,6 +33,9 @@ OverlayState showOverlay({
     }
   }
 
+  const int numberOfOverlayButtons = 4;
+  double getDivSize(BoxConstraints constraint) => constraint.maxHeight * numberOfOverlayButtons / 100;  
+
   overlayEntry = OverlayEntry(
     opaque: false,
     maintainState: false,
@@ -61,80 +64,81 @@ OverlayState showOverlay({
             )
           : TapRegion(
               onTapOutside: (event) => overlayEntry.remove(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // spacing: 50,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      processRequest(
-                        process: () async {
-                          await Future.delayed(Duration(seconds: 5));
-                          red.resetPoints();
-                          black.resetPoints();
-                        },
-                      );
-                    },
-                    style: TextButton.styleFrom(backgroundColor: Colors.green),
-                    child: Text(
-                      'TARUNGAN SELESAI',
-                      style: TextStyle(color: Colors.white, fontSize: 32),
-                    ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: screenWidth * 0.1,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          processRequest(
-                            process: () async {
-                              await Future.delayed(Duration(seconds: 5));
-                              red.resetPoints();
-                              black.resetPoints();
-                            },
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.red.shade900,
-                        ),
-                        child: Text(
-                          'WHT',
-                          style: TextStyle(color: Colors.white, fontSize: 32),
-                        ),
+              child: LayoutBuilder(
+                builder: (context, constraints) => Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        processRequest(
+                          process: () async {
+                            await Future.delayed(Duration(seconds: 5));
+                            red.resetPoints();
+                            black.resetPoints();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.green),
+                      child: Text(
+                        'TARUNGAN SELESAI',
+                        style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          processRequest(
-                            process: () async {
-                              await Future.delayed(Duration(seconds: 5));
-                              black.points = 0;
-                              red.resetPoints();
-                              black.resetPoints();
-                            },
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.black,
-                        ),
-                        child: Text(
-                          'WHT',
-                          style: TextStyle(color: Colors.white, fontSize: 32),
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(backgroundColor: Colors.grey),
-                    child: Text(
-                      'BATAL',
-                      style: TextStyle(color: Colors.white, fontSize: 32),
                     ),
-                  ),
-                ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: screenWidth * 0.1,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            processRequest(
+                              process: () async {
+                                await Future.delayed(Duration(seconds: 5));
+                                red.resetPoints();
+                                black.resetPoints();
+                              },
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.red.shade900,
+                          ),
+                          child: Text(
+                            'WHT',
+                            style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            processRequest(
+                              process: () async {
+                                await Future.delayed(Duration(seconds: 5));
+                                black.points = 0;
+                                red.resetPoints();
+                                black.resetPoints();
+                              },
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.black,
+                          ),
+                          child: Text(
+                            'WHT',
+                            style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () => overlayEntry.remove(),
+                      style: TextButton.styleFrom(backgroundColor: Colors.grey),
+                      child: Text(
+                        'BATAL',
+                        style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
     ),

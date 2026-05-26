@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'buttons.dart';
-import 'button_box.dart';
+import 'interactivebox.dart';
 import '../../../../../classes/fighter.dart';
 
 
@@ -12,7 +12,7 @@ Widget fighterInteractives(BuildContext context, Fighter side, Color color, Valu
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
-      spacing: 5,
+      spacing: 10,
       children: [
         Text('${side.points}', style: TextStyle(fontFamily: "", fontSize: 30, fontWeight: FontWeight.bold, color: color)),
         fighterPunchInteractives(context, side, color, updateState ),
@@ -50,7 +50,7 @@ Column fighterPenaltiesInteractives(
               'BERAT',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: MediaQuery.textScalerOf(context).scale(30),
+                // fontSize: MediaQuery.textScalerOf(context).scale(30),
               ),
             ),
           ),
@@ -59,14 +59,12 @@ Column fighterPenaltiesInteractives(
               side.removePoints(1);
               updateState(side.points);
             },
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                const Color.fromARGB(255, 207, 31, 18),
-              ),
+            style: TextButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 207, 31, 18),
             ),
             child: Text(
               'RINGAN',
-              style: TextStyle(color: Colors.white, fontSize: 30),
+              // style: TextStyle(color: Colors.white, fontSize: 30),
             ),
           ),
         ],
@@ -75,7 +73,7 @@ Column fighterPenaltiesInteractives(
   );
 }
 
-Container fighterKickInteractives(
+Widget fighterKickInteractives(
   BuildContext context,
   Fighter side,
   Color color,
@@ -88,7 +86,7 @@ Container fighterKickInteractives(
       Row(
         children: [
           Icon(Symbols.sports_martial_arts, color: color),
-          Text('TENDANGAN', style: TextStyle(fontSize: 18)),
+          Text('TENDANGAN'),
         ],
       ),
       Row(
@@ -134,7 +132,7 @@ Container fighterKickInteractives(
   );
 }
 
-Container fighterPunchInteractives(
+Widget fighterPunchInteractives(
   BuildContext context,
   Fighter side,
   Color color, ValueSetter<int> updateState ,
@@ -146,7 +144,7 @@ Container fighterPunchInteractives(
       Row(
         children: [
           Icon(Symbols.sports_mma, color: color),
-          Text('PUKULAN', style: TextStyle(fontSize: 18)),
+          Text('PUKULAN'),
         ],
       ),
 

@@ -1,4 +1,6 @@
 // Flutter packages
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../../classes/arena.dart';
 import '../setup/setup.dart';
@@ -16,8 +18,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
-  
-
   final GlobalKey<_GameState> key = GlobalKey<_GameState>();
   void updatePoints(int points, Fighter side) {
     setState(() {
@@ -35,14 +35,13 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
     Arena? arena = widget.arena;
     Fighter red = arena!.redFighter;
     Fighter black = arena.blackFighter;
-
-    double screenHeight = MediaQuery.heightOf(context);
-    double screenWidth = MediaQuery.widthOf(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Pertarungan ${arena.location} - Arena ${arena.arena} - Round ${arena.matches[0]} - Juri ${arena.judge}',
+          
         ),
+        leadingWidth: 40,
         leading: TextButton(
           onPressed: () {
             Navigator.pushReplacement(
@@ -50,8 +49,15 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
               MaterialPageRoute(builder: (context) => SetupScreen()),
             );
           },
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-          child: Text('BALIK', style: TextStyle(color: Colors.black)),
+          style: ElevatedButton.styleFrom(
+            // shape: BeveledRectangleBorder(
+            //   side: BorderSide(color: Colors.black)
+            // ),
+            foregroundColor: Colors.black,
+            // backgroundColor: Colors.black
+          ),
+          child: Icon(Icons.close)
+          // child: Text('BALIK', style: TextStyle(color: Colors.black)),
         ),
         actions: [
           TextButton(
@@ -79,10 +85,10 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
       ),
       body: Container(
         color: Colors.transparent,
-        height: screenHeight,
-        width: screenWidth,
+        height: MediaQuery.heightOf(context),
+        width: MediaQuery.widthOf(context),
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(5),
         child: Row(
           spacing: 10,
           children: [
