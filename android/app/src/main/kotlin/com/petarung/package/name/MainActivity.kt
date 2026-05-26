@@ -1,4 +1,4 @@
-package com.pertarungw.package.name
+package com.petarung.package.name
 
 import io.flutter.embedding.android.FlutterActivity
 
