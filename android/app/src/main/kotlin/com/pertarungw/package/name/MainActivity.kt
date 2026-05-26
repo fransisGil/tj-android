@@ -1,4 +1,4 @@
-package com.example.pertarungan
+package com.pertarungw.package.name
 
 import io.flutter.embedding.android.FlutterActivity
 
