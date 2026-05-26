@@ -1,3 +1,8 @@
+
+// const val APPWRITE_PROJECT_ID = "6a156f90000efb4f18a2"
+// const val APPWRITE_PROJECT_NAME = "Tarung Derajat"
+// const val APPWRITE_PUBLIC_ENDPOINT = "https://sgp.cloud.appwrite.io/v1"
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

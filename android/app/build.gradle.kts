@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.petarung.package.name"
+    namespace = "com.kel3.petarung"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.petarung.package.name"
+        applicationId = "com.kel3.petarung"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
