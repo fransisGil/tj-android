@@ -1,6 +1,4 @@
 // Flutter packages
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import '../../classes/arena.dart';
 import '../setup/setup.dart';
