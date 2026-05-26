@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'buttons.dart';
-import '../../../../../classes/fighter.dart';
 import 'button_box.dart';
+import '../../../../../classes/fighter.dart';
 
 
 Widget fighterInteractives(BuildContext context, Fighter side, Color color, ValueSetter<int> updateState) {
@@ -43,10 +43,8 @@ Column fighterPenaltiesInteractives(
               side.removePoints(2);
               updateState(side.points);
             },
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                const Color.fromARGB(255, 207, 31, 18),
-              ),
+            style: TextButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 207, 31, 18)
             ),
             child: Text(
               'BERAT',
