@@ -66,11 +66,11 @@ class MainApp extends StatelessWidget {
         ),
         dropdownMenuTheme: DropdownMenuThemeData(
           menuStyle: MenuStyle(
-            
+
           )
         )
       ),
-      home: SetupScreen()
+      home: SetupScreen(),
     );
   }
 }

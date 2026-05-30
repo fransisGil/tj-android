@@ -1,7 +1,12 @@
+import 'dart:async';
+
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import '../../classes/arena.dart';
 import '../../pages/game/game.dart';
 import '../../backend/app_config.dart';
+import 'package:dart_ping/dart_ping.dart';
 
 // Map<String, Map<String, dynamic>> events = {
 //   'location 1': {
@@ -28,6 +33,24 @@ class _SetupState extends State<SetupScreen>
   final _judgeController = TextEditingController();
   final _passkeyController = TextEditingController();
 
+  late List<DropdownMenuEntry> pertandinganList;
+  // void loadPertandingan() async {
+  //   try {
+  //     RowList response = await AppConfig().fetchPertandinganAktif();
+  //     setState(() {
+  //       // pertandinganList = response.convertTo<DropdownMenuEntry<String>>((p0) => DropdownMenuEntry(value: p0., label: label))
+  //     });
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // loadPertandingan();
+  }
+
   @override
   void dispose() {
     _matchController.dispose();
@@ -37,23 +60,27 @@ class _SetupState extends State<SetupScreen>
     super.dispose();
   }
 
-  List<String>? matches;
   bool isLoading = false;
   bool isConnected = false;
+  bool isInvalidated = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Pengaturan"),
-        actions: [
-          Icon(
-            Icons.square,
-            color: isConnected ? Colors.green : Colors.red.shade900,
-          ),
-        ],
+        // actions: [
+        //   Text(isConnected ? "Tersambung" : "Belum Tersambung"),
+        //   Icon(
+        //     Icons.square,
+        //     color: isConnected ? Colors.green : Colors.red.shade900,
+        //   ),
+        // ],
       ),
       floatingActionButton: ElevatedButton(
-        onPressed: () async {},
+        onPressed: () async {
+          // loadPertandingan();
+        },
         style: ElevatedButton.styleFrom(foregroundColor: Colors.black),
         child: Icon(Icons.refresh),
       ),
@@ -82,7 +109,7 @@ class _SetupState extends State<SetupScreen>
                         constraint: constraints,
                         controller: _matchController,
                         label: Text("Pilih Pertandingan"),
-                        entries: []
+                        entries: [],
                       ),
                       Text("Petarungan"),
                       dataDropdownMenu(
@@ -105,7 +132,7 @@ class _SetupState extends State<SetupScreen>
                         enabled: _judgeController.text.isNotEmpty,
                         controller: _passkeyController,
                         decoration: InputDecoration(
-                          labelText: "Masukkan Passkey"
+                          labelText: "Masukkan Passkey",
                         ),
                       ),
                     ],
@@ -118,7 +145,14 @@ class _SetupState extends State<SetupScreen>
                     textStyle: TextStyle(fontSize: 32),
                   ),
                   onPressed: () {
-                    
+                    // if (_fightController.text.isEmpty ||
+                    //     _judgeController.text.isEmpty ||
+                    //     _matchController.text.isEmpty ||
+                    //     _passkeyController.text.isEmpty) {}
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => GameScreen()),
+                    );
                   },
                   child: Text("Masuk"),
                 ),

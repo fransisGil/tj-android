@@ -8,35 +8,31 @@ import '../../classes/fighter.dart';
 import 'widgets/widgets.dart';
 
 class GameScreen extends StatefulWidget {
-  final Arena? arena;
-  const GameScreen({super.key, this.arena});
+  const GameScreen({super.key});
 
   @override
   State<GameScreen> createState() => _GameState();
 }
 
 class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
-  final GlobalKey<_GameState> key = GlobalKey<_GameState>();
-  void updatePoints(int points, Fighter side) {
-    setState(() {
-      side.points = points;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    try {
-      widget.arena;
-    } catch (e) {
-      Navigator.popAndPushNamed(context, '/setup');
-    }
-    Arena? arena = widget.arena;
-    Fighter red = arena!.redFighter;
+    // try {
+    //   widget.arena;
+    // } catch (e) {
+    //   Navigator.popAndPushNamed(context, '/setup');
+    // }
+    // Arena? arena = widget.arena;
+    // Fighter red = arena!.redFighter;
+    // Fighter black = arena.blackFighter;
+
+    Arena arena = Arena(match: "Demo", fight: "Petarungan Demo", judge: "Juri Demo", rounds: [1, 2]  );
+    Fighter red = arena.redFighter;
     Fighter black = arena.blackFighter;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pertarungan ${arena.location} - Arena ${arena.arena} - Round ${arena.matches[0]} - Juri ${arena.judge}',
+          'Pertandingan ${arena.match} - ${arena.fight} - Ronde ${arena.rounds[0]} - Juri ${arena.judge}',
           
         ),
         leadingWidth: 40,
@@ -60,7 +56,7 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
         actions: [
           TextButton(
             onPressed: () {
-              if (red.points > 0 || black.points > 0) {
+              if (red.sumPoints() > 0 || black.sumPoints() > 0) {
                 showOverlay(context: context, red: red, black: black);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -93,14 +89,12 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
             fighterInteractives(
               context,
               red,
-              Colors.red,
-              (points) => updatePoints(points, red),
+              Colors.red
             ),
             fighterInteractives(
               context,
               black,
               Colors.black,
-              (points) => updatePoints(points, black),
             ),
           ],
         ),

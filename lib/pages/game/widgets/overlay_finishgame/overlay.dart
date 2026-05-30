@@ -33,9 +33,6 @@ OverlayState showOverlay({
     }
   }
 
-  const int numberOfOverlayButtons = 4;
-  double getDivSize(BoxConstraints constraint) => constraint.maxHeight * numberOfOverlayButtons / 100;  
-
   overlayEntry = OverlayEntry(
     opaque: false,
     maintainState: false,
@@ -82,7 +79,7 @@ OverlayState showOverlay({
                       style: TextButton.styleFrom(backgroundColor: Colors.green),
                       child: Text(
                         'TARUNGAN SELESAI',
-                        style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                        style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
                       ),
                     ),
                     Row(
@@ -104,8 +101,8 @@ OverlayState showOverlay({
                             backgroundColor: Colors.red.shade900,
                           ),
                           child: Text(
-                            'WHT',
-                            style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                            'WHT: Merah Menang',
+                            style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
                           ),
                         ),
                         TextButton(
@@ -113,7 +110,6 @@ OverlayState showOverlay({
                             processRequest(
                               process: () async {
                                 await Future.delayed(Duration(seconds: 5));
-                                black.points = 0;
                                 red.resetPoints();
                                 black.resetPoints();
                               },
@@ -123,8 +119,8 @@ OverlayState showOverlay({
                             backgroundColor: Colors.black,
                           ),
                           child: Text(
-                            'WHT',
-                            style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                            'WHT: Hitam Menang',
+                            style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
                           ),
                         ),
                       ],
@@ -134,7 +130,7 @@ OverlayState showOverlay({
                       style: TextButton.styleFrom(backgroundColor: Colors.grey),
                       child: Text(
                         'BATAL',
-                        style: TextStyle(color: Colors.white, fontSize: getDivSize(constraints)),
+                        style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
                       ),
                     ),
                   ],

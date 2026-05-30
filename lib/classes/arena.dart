@@ -1,12 +1,26 @@
 import 'fighter.dart';
 
 class Arena {
-  final String location, arena, judge;
-  final List<String> matches;
-  final Fighter redFighter = Fighter(Side.red);
-  final Fighter blackFighter = Fighter(Side.black);
+  final HitCriteriaCounts _punchFactors = HitCriteriaCounts(
+    badanFactor: 1,
+    goyahFactor: 3,
+    mukaFactor: 2,
+  );
+  final HitCriteriaCounts _kickFactors = HitCriteriaCounts(
+    badanFactor: 2,
+    goyahFactor: 4,
+    mukaFactor: 3,
+  );
+  final PenaltyCounts _penaltyFactors = PenaltyCounts(beratFactor: 2);
 
-  Arena({required this.arena, required this.location, required this.judge, required this.matches});
+  final String match, fight, judge;
+  final List<int> rounds;
+  late Fighter redFighter;
+  late Fighter blackFighter;
+
+  Arena({required this.match, required this.fight, required this.judge, required this.rounds}) {
+    redFighter = blackFighter = Fighter(Side.red, punch: _punchFactors, kick: _kickFactors, penalties: _penaltyFactors);
+  }
 
   void reset() {
     redFighter.resetPoints();

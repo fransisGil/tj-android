@@ -1,7 +1,5 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AppConfig {
   late Client client;
@@ -20,7 +18,7 @@ class AppConfig {
     return await AppConfig().client.ping();
   }
 
-  Future<RowList> fetchPertandinganAktif(BuildContext context) async {
+  Future<RowList> fetchPertandinganAktif() async {
     TablesDB tablesDB = TablesDB(client);
     try {
       RowList result = await tablesDB.listRows(
@@ -29,7 +27,7 @@ class AppConfig {
         queries: [Query.equal('status', 'aktif')],
         total: false,
         ttl: 0
-      );
+      ).timeout(Duration(seconds: 10));
       return result;
     } on AppwriteException catch (e) {
       throw AppwriteException(e.toString());
