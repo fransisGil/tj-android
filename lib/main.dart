@@ -33,6 +33,9 @@ class MainApp extends StatelessWidget {
       title: 'Aplikasi Penilaian Tanjung Derajat',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        textTheme: TextTheme(
+          
+        ),
         appBarTheme: const AppBarThemeData(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
@@ -60,9 +63,12 @@ class MainApp extends StatelessWidget {
           ),
 
           filled: true,
-          labelStyle: TextStyle(color: Colors.black, fontSize: 12),
         ),
-        // textTheme: TextTheme(bodyLarge: TextStyle(fontSize: 16)),
+        dropdownMenuTheme: DropdownMenuThemeData(
+          menuStyle: MenuStyle(
+            
+          )
+        )
       ),
       home: SetupScreen()
     );

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../classes/arena.dart';
 import '../../pages/game/game.dart';
+import '../../backend/app_config.dart';
 
-Map<String, Map<String, dynamic>> events = {
-  'location 1': {
-    'ring': <String, List<String>>{
-      'Arena 1': ['Game 1', 'Game 2', 'Game 3'],
-      'Arena 2': ['Game 1', 'Game 2', 'Game 3'],
-      'Arena 3': ['Game 1', 'Game 2', 'Game 3'],
-    },
-    'judge': <String>['Judge 1', 'Judge 2', 'Judge 3'],
-  },
-};
+// Map<String, Map<String, dynamic>> events = {
+//   'location 1': {
+//     'ring': <String, List<String>>{
+//       'Arena 1': ['Game 1', 'Game 2', 'Game 3'],
+//       'Arena 2': ['Game 1', 'Game 2', 'Game 3'],
+//       'Arena 3': ['Game 1', 'Game 2', 'Game 3'],
+//     },
+//     'judge': <String>['Judge 1', 'Judge 2', 'Judge 3'],
+//   },
+// };
 
 class SetupScreen extends StatefulWidget {
   const SetupScreen({super.key});
@@ -22,150 +23,107 @@ class SetupScreen extends StatefulWidget {
 
 class _SetupState extends State<SetupScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _ringController = TextEditingController();
-  final TextEditingController _judgeController = TextEditingController();
+  final _matchController = TextEditingController();
+  final _fightController = TextEditingController();
+  final _judgeController = TextEditingController();
+  final _passkeyController = TextEditingController();
 
   @override
   void dispose() {
-    _locationController.dispose();
-    _ringController.dispose();
+    _matchController.dispose();
+    _fightController.dispose();
     _judgeController.dispose();
+    _passkeyController.dispose();
     super.dispose();
   }
 
   List<String>? matches;
-
   bool isLoading = false;
+  bool isConnected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Pengaturan"),
+        actions: [
+          Icon(
+            Icons.square,
+            color: isConnected ? Colors.green : Colors.red.shade900,
+          ),
+        ],
+      ),
       floatingActionButton: ElevatedButton(
-        onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
-          await Future.delayed(Duration(seconds: 5));
-          setState(() {
-            isLoading = false;
-          });
-        },
+        onPressed: () async {},
         style: ElevatedButton.styleFrom(foregroundColor: Colors.black),
         child: Icon(Icons.refresh),
       ),
-      body: Center(
-        heightFactor: MediaQuery.heightOf(context),
-        widthFactor: MediaQuery.widthOf(context),
-        child: Card(
-          // margin: EdgeInsets.all(MediaQuery.widthOf(context) * 0.15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.black, width: 1),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            spacing: 20,
-            children: [
-              Text(
-                'Pengaturan\n',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Lokasi: '),
-                  dataDropdownMenu(
-                    controller: _locationController,
-                    entries: events.entries
-                        .map(
-                          (entry) => DropdownMenuEntry(
-                            value: entry.key,
-                            label: entry.key,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  Text('Ring: '),
-                  dataDropdownMenu(
-                    enabled: _locationController.text.isNotEmpty,
-                    controller: _ringController,
-                    entries: _locationController.text.isEmpty
-                        ? []
-                        : ((events[_locationController.text]!['ring']
-                                      as Map<String, List<String>>)
-                                  .keys
-                                  .map(
-                                    (ring) => DropdownMenuEntry<String>(
-                                      value: ring,
-                                      label: ring,
-                                    ),
-                                  ))
-                              .toList(),
-                    selectAction: (value) {
-                      matches = events[_locationController.text]!['ring'][_ringController.text];
-                      setState(() {
-                        
-                      });
-                    },
-                  ),
-                  Text('Juri: '),
-                  dataDropdownMenu(
-                    enabled: _locationController.text.isNotEmpty,
-                    controller: _judgeController,
-                    entries: _locationController.text.isEmpty
-                        ? []
-                        : (events[_locationController.text]!['judge']
-                                  as List<String>)
-                              .map(
-                                (judge) => DropdownMenuEntry(
-                                  value: judge,
-                                  label: judge,
-                                ),
-                              )
-                              .toList(),
-                  ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_locationController.text.isEmpty ||
-                      _ringController.text.isEmpty ||
-                      _judgeController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Semua field harus diisi!')),
-                    );
-                    return;
-                  }
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GameScreen(
-                        arena: Arena(
-                          arena: _ringController.text,
-                          judge: _judgeController.text,
-                          location: _locationController.text,
-                          matches: matches!,
+
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: BoxBorder.all(color: Colors.black),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            width: MediaQuery.widthOf(context) * 0.4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 24,
+              children: [
+                LayoutBuilder(
+                  builder: (ctx, constraints) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
+                    children: [
+                      Text("Pertandingan"),
+                      dataDropdownMenu(
+                        constraint: constraints,
+                        controller: _matchController,
+                        label: Text("Pilih Pertandingan"),
+                        entries: []
+                      ),
+                      Text("Petarungan"),
+                      dataDropdownMenu(
+                        constraint: constraints,
+                        controller: _fightController,
+                        enabled: _matchController.text.isNotEmpty,
+                        label: Text("Pilih Petarungan"),
+                        entries: [],
+                      ),
+                      Text("Juri"),
+                      dataDropdownMenu(
+                        constraint: constraints,
+                        controller: _judgeController,
+                        enabled: _matchController.text.isNotEmpty,
+                        label: Text("Pilih Juri"),
+                        entries: [],
+                      ),
+                      Text("Passkey"),
+                      TextField(
+                        enabled: _judgeController.text.isNotEmpty,
+                        controller: _passkeyController,
+                        decoration: InputDecoration(
+                          labelText: "Masukkan Passkey"
                         ),
                       ),
-                    ),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    ],
+                  ),
                 ),
-                child: isLoading
-                    ? CircularProgressIndicator()
-                    : Text(
-                        'Masuk',
-                        style: TextStyle(color: Colors.white, fontSize: 32),
-                      ),
-              ),
-            ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    textStyle: TextStyle(fontSize: 32),
+                  ),
+                  onPressed: () {
+                    
+                  },
+                  child: Text("Masuk"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -173,22 +131,17 @@ class _SetupState extends State<SetupScreen>
   }
 
   Widget dataDropdownMenu({
+    required BoxConstraints constraint,
     required TextEditingController controller,
     required List<DropdownMenuEntry<String>> entries,
+    Widget? label,
     ValueChanged<String?>? selectAction,
     bool? enabled,
   }) {
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(
-        text: controller.text.isEmpty ? '' : controller.text,
-        style: DropdownMenuTheme.of(context).textStyle,
-      ),
-      textDirection: Directionality.of(context),
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
     return DropdownMenu(
-      width: controller.text.isEmpty ? 100 : textPainter.size.width + 90,
       enabled: enabled ?? true,
+      width: constraint.maxWidth,
+      label: label,
       controller: controller,
       dropdownMenuEntries: entries,
       onSelected:
