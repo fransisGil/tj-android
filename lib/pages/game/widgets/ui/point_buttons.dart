@@ -6,16 +6,19 @@ Widget pointButton({
   required Color color,
   required VoidCallback action,
 }) {
-  return IconButton(
-    onPressed: action,
-    icon: Icon(icon, color: Colors.white),
-    style: IconButton.styleFrom(
-      backgroundColor: color,
-      alignment: AlignmentGeometry.center,
-      focusColor: Colors.white,
-      overlayColor: Colors.white,
-      hoverColor: Colors.white38,
+  return Expanded(
+    child: IconButton(
+      onPressed: action,
+      icon: Icon(icon, color: Colors.white, size: constraints.maxHeight * 0.8,),
+      style: IconButton.styleFrom(
+        backgroundColor: color,
+        alignment: AlignmentGeometry.center,
+        focusColor: Colors.white,
+        overlayColor: Colors.white,
+        hoverColor: Colors.white38,
+      ),
+      
+      iconSize: constraints.maxHeight
     ),
-    iconSize: constraints.maxWidth / 3 - 20,
   );
 }

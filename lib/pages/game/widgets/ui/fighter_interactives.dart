@@ -49,7 +49,10 @@ Widget fighterPenaltiesInteractives(
       builder: (ctx, constraints) => Column(
         spacing: 5,
         children: [
-          Text('Pelanggaran', style: TextStyle(fontSize: fontSize - 6)),
+          Text(
+            'Pelanggaran',
+            style: TextStyle(fontSize: fontSize - 6),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,7 +67,10 @@ Widget fighterPenaltiesInteractives(
                   backgroundColor: Color.fromARGB(255, 207, 31, 18),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 ),
-                child: Text('BERAT', style: TextStyle(color: Colors.white, fontSize: fontSize)),
+                child: Text(
+                  'BERAT',
+                  style: TextStyle(color: Colors.white, fontSize: fontSize),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -75,7 +81,10 @@ Widget fighterPenaltiesInteractives(
                   backgroundColor: const Color.fromARGB(255, 207, 31, 18),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 ),
-                child: Text('RINGAN', style: TextStyle(color: Colors.white, fontSize: fontSize)),
+                child: Text(
+                  'RINGAN',
+                  style: TextStyle(color: Colors.white, fontSize: fontSize),
+                ),
               ),
             ],
           ),
