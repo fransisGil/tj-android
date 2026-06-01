@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';

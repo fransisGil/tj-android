@@ -4,11 +4,10 @@ import 'package:pertarungan/pages/game/widgets/ui/point_buttons.dart';
 
 Widget interactiveBox({
   required String titleString,
-  required Icon titleIcon,
+  required IconData titleIcon,
   required void Function() faceAction,
   required void Function() bodyAction,
   required void Function() goyahAction,
-
   Color? color,
 }) {
   color ?? Colors.black;
@@ -24,7 +23,11 @@ Widget interactiveBox({
         mainAxisSize: MainAxisSize.max,
         spacing: 5,
         children: [
-          Row(children: [titleIcon, Text(titleString)]),
+          Row(
+            children: [
+              Icon(titleIcon, color: color, size: 64,),
+              Text(titleString, style: TextStyle(color: color, fontSize: 26),)
+            ]),
           Flexible(
             child: LayoutBuilder(
               builder: (context, constraints) => Row(
@@ -35,7 +38,7 @@ Widget interactiveBox({
                   pointButton(
                     constraints: constraints,
                     icon: Symbols.cognition_2,
-                    color: color!,
+                    color: color,
                     action: faceAction,
                   ),
                   // Badan

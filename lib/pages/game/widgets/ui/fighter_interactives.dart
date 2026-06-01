@@ -7,11 +7,9 @@ StatefulWidget fighterInteractives(
   BuildContext context,
   Fighter side,
   Color color,
-  // StateSetter updateState,
 ) {
   return StatefulBuilder(
     builder: (parentConstraints, setState) => Expanded(
-      flex: 1,
       child: LayoutBuilder(
         builder: (layoutCtx, constraints) => Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,41 +42,45 @@ Widget fighterPenaltiesInteractives(
   Color color,
   StateSetter updateState,
 ) {
-  const double fontSize = 32;
+  double fontSize = 64;
   return Container(
     padding: EdgeInsets.symmetric(vertical: 6),
-    child: Column(
-      spacing: 5,
-      children: [
-        Text('Pelanggaran', style: TextStyle(fontSize: 22)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 10,
-          children: [
-            TextButton(
-              onPressed: () {
-                side.penalties.addBerat();
-                updateState(() => side);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 207, 31, 18),
+    child: LayoutBuilder(
+      builder: (ctx, constraints) => Column(
+        spacing: 5,
+        children: [
+          Text('Pelanggaran', style: TextStyle(fontSize: fontSize - 6)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 10,
+            children: [
+              TextButton(
+                onPressed: () {
+                  side.penalties.addBerat();
+                  updateState(() => side);
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 207, 31, 18),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                ),
+                child: Text('BERAT', style: TextStyle(color: Colors.white, fontSize: fontSize)),
               ),
-              child: Text('BERAT', style: TextStyle(color: Colors.white, fontSize: fontSize)),
-            ),
-            TextButton(
-              onPressed: () {
-                side.penalties.addRingan();
-                updateState(() => side);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 207, 31, 18),
+              TextButton(
+                onPressed: () {
+                  side.penalties.addRingan();
+                  updateState(() => side);
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 207, 31, 18),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                ),
+                child: Text('RINGAN', style: TextStyle(color: Colors.white, fontSize: fontSize)),
               ),
-              child: Text('RINGAN', style: TextStyle(color: Colors.white, fontSize: fontSize)),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -91,7 +93,7 @@ Widget fighterKickInteractives(
 ) {
   return interactiveBox(
     color: color,
-    titleIcon: Icon(Symbols.sports_martial_arts, color: color),
+    titleIcon: Symbols.sports_martial_arts,
     titleString: 'TENDANGAN',
     faceAction: () {
       side.kick.addMuka();
@@ -116,7 +118,7 @@ Widget fighterPunchInteractives(
 ) {
   return interactiveBox(
     color: color,
-    titleIcon: Icon(Symbols.sports_mma, color: color),
+    titleIcon: Symbols.sports_mma,
     titleString: 'PUKULAN',
     faceAction: () {
       side.punch.addMuka();

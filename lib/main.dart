@@ -68,6 +68,13 @@ class MainApp extends StatelessWidget {
           menuStyle: MenuStyle(
 
           )
+        ),
+        typography: Typography(
+          englishLike: TextTheme(
+            bodyMedium: TextStyle(
+              
+            )
+          )
         )
       ),
       home: SetupScreen(),
