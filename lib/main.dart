@@ -64,18 +64,6 @@ class MainApp extends StatelessWidget {
 
           filled: true,
         ),
-        dropdownMenuTheme: DropdownMenuThemeData(
-          menuStyle: MenuStyle(
-
-          )
-        ),
-        typography: Typography(
-          englishLike: TextTheme(
-            bodyMedium: TextStyle(
-              
-            )
-          )
-        )
       ),
       home: SetupScreen(),
     );
