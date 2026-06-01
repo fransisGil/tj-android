@@ -69,10 +69,10 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
                 );
               }
             },
-            style: TextButton.styleFrom(backgroundColor: Colors.green),
+            style: TextButton.styleFrom(backgroundColor: Colors.green, padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
             child: Text(
               'SELESAI',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: Colors.white, fontSize: 32),
             ),
           ),
         ],
