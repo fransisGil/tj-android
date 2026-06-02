@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-Widget showDialog(BuildContext context, String title, String content) {
-  return AlertDialog(
+Future<dynamic> displayDialog(BuildContext context, String title, String content) {
+  return showDialog(context: context, builder: (context) => AlertDialog(
     title: Text(title),
     content: Text(content),
     actions: [
@@ -10,5 +10,5 @@ Widget showDialog(BuildContext context, String title, String content) {
         child: const Text('OK'),
       ),
     ],
-  );
+  ));
 }

@@ -1,0 +1,42 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:flutter/material.dart';
+import 'package:pertarungan/backend/app_config.dart';
+import 'package:pertarungan/pages/setup/components/ui/alert_dialog.dart';
+
+Future<List<DropdownMenuEntry<String>>> fetchData({
+  required BuildContext context,
+  required String tableID,
+  required String columnID,
+  List<String>? queries,
+}) async {
+  try {
+    List<DropdownMenuEntry<String>> dropdownList = [];
+    await TablesDB(AppConfig().client)
+        .listRows(
+          databaseId: AppConfig().databaseID,
+          tableId: tableID,
+          queries: queries ?? [],
+        )
+        .timeout(Duration(seconds: 5))
+        .then(
+          (value) => {
+            dropdownList = value.rows
+                .map(
+                  (e) =>
+                      DropdownMenuEntry(value: e.$id, label: e.data[columnID]),
+                )
+                .toList(),
+          },
+        );
+    return dropdownList;
+  } on AppwriteException catch (e) {
+    if (context.mounted) {
+      displayDialog(
+        context,
+        'Error Jaringan',
+        'Ada masalah dengan hubungan jaringan.\nKode masalah: ${e.code}: ${e.toString()}',
+      );
+    }
+    return [];
+  }
+}

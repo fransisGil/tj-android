@@ -28,9 +28,6 @@ class MainApp extends StatelessWidget {
       title: 'Aplikasi Penilaian Tanjung Derajat',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: TextTheme(
-          
-        ),
         appBarTheme: const AppBarThemeData(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
