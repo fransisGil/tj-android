@@ -1,19 +1,9 @@
-import 'package:flutter/material.dart';
-import '../../classes/arena.dart';
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
+import 'package:flutter/material.dart' hide Row;
+// import '../../classes/arena.dart';
 import '../../pages/game/game.dart';
 import '../../backend/app_config.dart';
-
-
-// Map<String, Map<String, dynamic>> events = {
-//   'location 1': {
-//     'ring': <String, List<String>>{
-//       'Arena 1': ['Game 1', 'Game 2', 'Game 3'],
-//       'Arena 2': ['Game 1', 'Game 2', 'Game 3'],
-//       'Arena 3': ['Game 1', 'Game 2', 'Game 3'],
-//     },
-//     'judge': <String>['Judge 1', 'Judge 2', 'Judge 3'],
-//   },
-// };
 
 class SetupScreen extends StatefulWidget {
   const SetupScreen({super.key});
@@ -29,7 +19,14 @@ class _SetupState extends State<SetupScreen>
   final _judgeController = TextEditingController();
   final _passkeyController = TextEditingController();
 
-  late List<DropdownMenuEntry> pertandinganList;
+  late List<Row> pertandinganList = [];
+  List<DropdownMenuEntry<String>> pertandinganEntries = [];
+
+  @override
+  void initState() {
+    fetchPertandingan();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -40,19 +37,62 @@ class _SetupState extends State<SetupScreen>
     super.dispose();
   }
 
-  bool isLoading = false;
-  bool isConnected = false;
+  bool isLoadingPertandingan = false;
+  bool isLoadingPetarungan = false;
+  bool isLoadingJuri = false;
   bool isInvalidated = false;
+
+  void fetchPertandingan() async {
+    setState(() {
+      isLoadingPertandingan = true;
+    });
+    try {
+      var data = await TablesDB(AppConfig().client)
+          .listRows(databaseId: AppConfig().databaseID, tableId: 'pertandingan')
+          .timeout(Duration(seconds: 5));
+      // pertandinganList = data.rows
+      pertandinganEntries = data.rows
+          .map((e) => DropdownMenuEntry(value: e.$id, label: e.data['nama_pertandingan']))
+          .toList();
+    } on AppwriteException catch (e, stacktrace) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal memuat data pertandingan: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoadingPertandingan = false;
+      });
+    }
+  }
+
+  void fetchPetarungan() async {
+    setState(() {
+      isLoadingPetarungan = true;
+    });
+    try {
+      var data = await TablesDB(AppConfig().client)
+          .listRows(databaseId: AppConfig().databaseID, tableId: 'petarungan')
+          .timeout(Duration(seconds: 5));
+    } on AppwriteException catch (e, stacktrace) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal memuat data petarungan: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoadingPetarungan = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Pengaturan"),
-      ),
+      appBar: AppBar(title: Text("Pengaturan")),
       floatingActionButton: ElevatedButton(
         onPressed: () async {
-          // loadPertandingan();
+          if (_matchController.text.isEmpty) {
+            fetchPertandingan();
+          }
         },
         style: ElevatedButton.styleFrom(foregroundColor: Colors.black),
         child: Icon(Icons.refresh),
@@ -78,14 +118,18 @@ class _SetupState extends State<SetupScreen>
                     spacing: 10,
                     children: [
                       Text("Pertandingan"),
-                      dataDropdownMenu(
+                      isLoadingPertandingan
+                          ? CircularProgressIndicator()
+                          : dataDropdownMenu(
                         constraint: constraints,
                         controller: _matchController,
                         label: Text("Pilih Pertandingan"),
-                        entries: [],
+                        entries: pertandinganEntries,
                       ),
                       Text("Petarungan"),
-                      dataDropdownMenu(
+                      isLoadingPetarungan
+                          ? CircularProgressIndicator()
+                          : dataDropdownMenu(
                         constraint: constraints,
                         controller: _fightController,
                         enabled: _matchController.text.isNotEmpty,
@@ -93,7 +137,9 @@ class _SetupState extends State<SetupScreen>
                         entries: [],
                       ),
                       Text("Juri"),
-                      dataDropdownMenu(
+                      isLoadingJuri
+                          ? CircularProgressIndicator()
+                          :  dataDropdownMenu(
                         constraint: constraints,
                         controller: _judgeController,
                         enabled: _matchController.text.isNotEmpty,

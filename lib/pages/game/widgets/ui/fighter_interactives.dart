@@ -21,14 +21,14 @@ StatefulWidget fighterInteractives(
               '${side.sumPoints()}',
               style: TextStyle(
                 fontFamily: "",
-                fontSize: 30,
+                fontSize: MediaQuery.of(context).size.height * 0.05,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
-            fighterPunchInteractives(constraints, side, color, setState),
-            fighterKickInteractives(constraints, side, color, setState),
-            fighterPenaltiesInteractives(constraints, side, color, setState),
+            fighterPunchInteractives(layoutCtx, constraints, side, color, setState),
+            fighterKickInteractives(layoutCtx, constraints, side, color, setState),
+            fighterPenaltiesInteractives(layoutCtx, constraints, side, color, setState),
           ],
         ),
       ),
@@ -37,12 +37,13 @@ StatefulWidget fighterInteractives(
 }
 
 Widget fighterPenaltiesInteractives(
+  BuildContext ctx,
   BoxConstraints parentConstraints,
   Fighter side,
   Color color,
   StateSetter updateState,
 ) {
-  double fontSize = 64;
+  double fontSize = MediaQuery.of(ctx).size.height * 0.05;
   return Container(
     padding: EdgeInsets.symmetric(vertical: 6),
     child: LayoutBuilder(
@@ -51,7 +52,7 @@ Widget fighterPenaltiesInteractives(
         children: [
           Text(
             'Pelanggaran',
-            style: TextStyle(fontSize: fontSize - 6),
+            style: TextStyle(fontSize: fontSize - 6, fontWeight: FontWeight.bold),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -95,12 +96,14 @@ Widget fighterPenaltiesInteractives(
 }
 
 Widget fighterKickInteractives(
+  BuildContext ctx,
   BoxConstraints parentConstraints,
   Fighter side,
   Color color,
   StateSetter updateState,
 ) {
   return interactiveBox(
+    context: ctx,
     color: color,
     titleIcon: Symbols.sports_martial_arts,
     titleString: 'TENDANGAN',
@@ -120,12 +123,14 @@ Widget fighterKickInteractives(
 }
 
 Widget fighterPunchInteractives(
+  BuildContext ctx,
   BoxConstraints parentConstraints,
   Fighter side,
   Color color,
   StateSetter updateState,
 ) {
   return interactiveBox(
+    context: ctx,
     color: color,
     titleIcon: Symbols.sports_mma,
     titleString: 'PUKULAN',

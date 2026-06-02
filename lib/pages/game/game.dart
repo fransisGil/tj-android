@@ -33,7 +33,7 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: Text(
           'Pertandingan ${arena.match} - ${arena.fight} - Ronde ${arena.rounds[0]} - Juri ${arena.judge}',
-          style: TextStyle(fontSize: 32),
+          style: TextStyle(fontSize: MediaQuery.of(context).size.height * 0.035, fontWeight: FontWeight.bold),
         ),
         leadingWidth: 40,
         leading: TextButton(
@@ -82,7 +82,7 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
         height: MediaQuery.heightOf(context),
         width: MediaQuery.widthOf(context),
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.all(5),
+        padding: EdgeInsets.all(8),
         child: Row(
           spacing: 10,
           children: [
