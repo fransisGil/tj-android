@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_autosize_screen_pro/flutter_autosize_screen_pro.dart';
+import 'package:pertarungan/pages/game/game.dart';
 
 // Modules
 import 'pages/setup/setup.dart';
@@ -56,7 +57,11 @@ class MainApp extends StatelessWidget {
           filled: true,
         ),
       ),
-      home: SetupScreen(),
+      initialRoute: '/setup',
+      routes: {
+        '/setup': (context) => SetupScreen(),
+        '/game':(context) => GameScreen()
+      },
     );
   }
 }

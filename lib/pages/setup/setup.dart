@@ -1,6 +1,6 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:flutter/material.dart' hide Row;
-import 'package:flutter/src/widgets/basic.dart';
+import 'package:appwrite/models.dart' as appwritemodel;
+import 'package:flutter/material.dart';
 import 'package:pertarungan/backend/app_config.dart';
 import 'package:pertarungan/pages/setup/components/processes/get_data.dart';
 import 'package:pertarungan/pages/setup/components/ui/alert_dialog.dart';
@@ -50,6 +50,7 @@ class _SetupState extends State<SetupScreen>
   bool isLoadingPertandingan = false;
   bool isLoadingPetarungan = false;
   bool isLoadingJuri = false;
+  bool isLoadingValid = false;
   bool isInvalidated = false;
 
   void getPertandingan() async {
@@ -89,7 +90,7 @@ class _SetupState extends State<SetupScreen>
           tableId: 'juri_petarungan',
           total: false,
           queries: [
-            Query.select(['juri.nama_juri']),
+            Query.select(['*','juri.nama_juri']),
             Query.equal('petarungan', [value]),
           ],
         )
@@ -108,7 +109,8 @@ class _SetupState extends State<SetupScreen>
           },
         )
         .then(
-          (value) => {
+          (value) {
+            print(value.rows.toString());
             entries['juri'] = value.rows
                 .map(
                   (e) => DropdownMenuEntry(
@@ -116,7 +118,7 @@ class _SetupState extends State<SetupScreen>
                     label: e.data['juri']['nama_juri'],
                   ),
                 )
-                .toList(),
+                .toList();
           },
         );
     setState(() => isLoadingJuri = false);
@@ -227,6 +229,7 @@ class _SetupState extends State<SetupScreen>
                                     getJuri(
                                       selectedValues['pertarungan']!['id']!,
                                     );
+                                    setState(() {});
                                   },
                                   selectAction: (value) {
                                     if (value != null) {
@@ -239,6 +242,7 @@ class _SetupState extends State<SetupScreen>
                                             )
                                             .label,
                                       };
+                                      setState(() {});
                                     }
                                   },
                                 ),
@@ -263,20 +267,58 @@ class _SetupState extends State<SetupScreen>
                         ),
                         textStyle: TextStyle(fontSize: 32),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        setState(() {
+                          isLoadingValid = true;
+                        });
                         if (_fightController.text.isEmpty ||
                             _judgeController.text.isEmpty ||
                             _matchController.text.isEmpty ||
                             _passkeyController.text.isEmpty) {
-                              // TODO: Implement focus to empty fields
-                              return;
-                            }
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => GameScreen()),
-                        );
+                          // TODO: Implement focus to empty fields
+                          return;
+                        }
+                        late appwritemodel.Row getPasskey;
+                        try {
+                          getPasskey = await TablesDB(AppConfig().client)
+                              .getRow(
+                                databaseId: AppConfig().databaseID,
+                                tableId: 'juri',
+                                rowId: selectedValues['juri']!['id']!,
+                              )
+                              .timeout(Duration(seconds: 10));
+                          if (getPasskey.data['passkey'] !=
+                              _passkeyController.text) {
+                            if (!context.mounted) return;
+                            displayDialog(
+                              context,
+                              'Incorrect Passkey',
+                              'Passkey is incorrect. Please try again.',
+                            );
+                            return;
+                          }
+                          if (!context.mounted) return;
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GameScreen(),
+                            ),
+                          );
+                        } on AppwriteException catch (e) {
+                          displayDialog(
+                            context,
+                            'AppwriteException',
+                            e.toString(),
+                          );
+                        } finally {
+                          setState(() {
+                            isLoadingValid = false;
+                          });
+                        }
                       },
-                      child: Text("Masuk"),
+                      child: isLoadingValid
+                          ? CircularProgressIndicator()
+                          : Text("Masuk"),
                     ),
                   ],
                 ),
