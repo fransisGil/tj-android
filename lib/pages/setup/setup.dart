@@ -323,6 +323,7 @@ class _SetupState extends State<SetupScreen>
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fetch game rounds error: round is less than one.')));
                             throw AppwriteException();
                           }
+                          AppConfig().account.createEmailPasswordSession(email: 'judges@judgeaccess.com', password: 'judgeaccess');
                           Navigator.pushReplacementNamed(
                             context,
                             '/game',

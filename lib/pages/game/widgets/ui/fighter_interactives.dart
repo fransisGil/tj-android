@@ -3,34 +3,33 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'interactivebox.dart';
 import '../../../../../classes/fighter.dart';
 
-StatefulWidget fighterInteractives(
+Widget fighterInteractives(
   BuildContext context,
   Fighter side,
   Color color,
+  void Function(void Function()) stateSetter
 ) {
-  return StatefulBuilder(
-    builder: (parentConstraints, setState) => Expanded(
-      child: LayoutBuilder(
-        builder: (layoutCtx, constraints) => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          spacing: 10,
-          children: [
-            Text(
-              '${side.sumPoints()}',
-              style: TextStyle(
-                fontFamily: "",
-                fontSize: MediaQuery.of(context).size.height * 0.05,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+  return Expanded(
+    child: LayoutBuilder(
+      builder: (layoutCtx, constraints) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        spacing: 10,
+        children: [
+          Text(
+            '${side.sumPoints()}',
+            style: TextStyle(
+              fontFamily: "",
+              fontSize: MediaQuery.of(context).size.height * 0.05,
+              fontWeight: FontWeight.bold,
+              color: color,
             ),
-            fighterPunchInteractives(layoutCtx, constraints, side, color, setState),
-            fighterKickInteractives(layoutCtx, constraints, side, color, setState),
-            fighterPenaltiesInteractives(layoutCtx, constraints, side, color, setState),
-          ],
-        ),
+          ),
+          fighterPunchInteractives(layoutCtx, constraints, side, color, stateSetter),
+          fighterKickInteractives(layoutCtx, constraints, side, color, stateSetter),
+          fighterPenaltiesInteractives(layoutCtx, constraints, side, color, stateSetter),
+        ],
       ),
     ),
   );
@@ -109,15 +108,15 @@ Widget fighterKickInteractives(
     titleString: 'TENDANGAN',
     faceAction: () {
       side.kick.addMuka();
-      updateState(() {});
+      updateState(() => side);
     },
     bodyAction: () {
       side.kick.addBadan();
-      updateState(() {});
+      updateState(() => side);
     },
     goyahAction: () {
       side.kick.addGoyah();
-      updateState(() {});
+      updateState(() => side);
     },
   );
 }

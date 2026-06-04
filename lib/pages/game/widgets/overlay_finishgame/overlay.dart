@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:pertarungan/classes/arena.dart';
 import 'package:pertarungan/classes/fighter.dart';
 
 OverlayState showOverlay({
   required BuildContext context,
+  required Arena arena,
   required Fighter red,
   required Fighter black,
+  required void Function(void Function()) stateSetter,
+  required Completer completer
 }) {
   OverlayState overlayState = Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -17,11 +23,6 @@ OverlayState showOverlay({
       overlayEntry.remove();
       overlayState.insert(overlayEntry);
       await process();
-      context.mounted
-          ? ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Berhasil')))
-          : null;
     } catch (e) {
       context.mounted
           ? ScaffoldMessenger.of(
@@ -30,6 +31,7 @@ OverlayState showOverlay({
           : null;
     } finally {
       overlayEntry.remove();
+      completer.complete();
     }
   }
 
@@ -70,16 +72,22 @@ OverlayState showOverlay({
                       onPressed: () {
                         processRequest(
                           process: () async {
+                            // TODO: Tarungan Selesai; normal finish condition
                             await Future.delayed(Duration(seconds: 5));
                             red.resetPoints();
                             black.resetPoints();
                           },
                         );
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.green),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
                       child: Text(
                         'TARUNGAN SELESAI',
-                        style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: constraints.maxWidth * 0.045,
+                        ),
                       ),
                     ),
                     Row(
@@ -102,7 +110,10 @@ OverlayState showOverlay({
                           ),
                           child: Text(
                             'WHT: Merah Menang',
-                            style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: constraints.maxWidth * 0.045,
+                            ),
                           ),
                         ),
                         TextButton(
@@ -120,7 +131,10 @@ OverlayState showOverlay({
                           ),
                           child: Text(
                             'WHT: Hitam Menang',
-                            style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: constraints.maxWidth * 0.045,
+                            ),
                           ),
                         ),
                       ],
@@ -130,7 +144,10 @@ OverlayState showOverlay({
                       style: TextButton.styleFrom(backgroundColor: Colors.grey),
                       child: Text(
                         'BATAL',
-                        style: TextStyle(color: Colors.white, fontSize: constraints.maxWidth * 0.045),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: constraints.maxWidth * 0.045,
+                        ),
                       ),
                     ),
                   ],

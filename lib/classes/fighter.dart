@@ -1,12 +1,9 @@
-enum Side { red, black }
-
 class Fighter {
-  final Side side;
-  HitCriteriaCounts punch = HitCriteriaCounts();
-  HitCriteriaCounts kick = HitCriteriaCounts();
-  PenaltyCounts penalties = PenaltyCounts();
+  HitCriteriaCounts punch = HitCriteriaCounts(badanFactor: 1, goyahFactor: 2, mukaFactor: 3);
+  HitCriteriaCounts kick = HitCriteriaCounts(badanFactor: 2, mukaFactor: 3, goyahFactor: 4);
+  PenaltyCounts penalties = PenaltyCounts(beratFactor: 2);
 
-  Fighter(this.side, {required this.punch, required this.kick, required this.penalties});
+  Fighter();
 
   int sumPoints() {
     int result = punch.sum() + kick.sum() - penalties.sum();

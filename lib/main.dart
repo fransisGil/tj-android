@@ -57,9 +57,9 @@ class MainApp extends StatelessWidget {
           filled: true,
         ),
       ),
-      initialRoute: '/setup',
+      initialRoute: '/',
       routes: {
-        '/setup': (context) => SetupScreen(),
+        '/': (context) => SetupScreen(),
         '/game':(context) => GameScreen()
       },
     );
