@@ -2,6 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwritemodel;
 import 'package:flutter/material.dart';
 import 'package:pertarungan/backend/app_config.dart';
+import 'package:pertarungan/classes/arena.dart';
 import 'package:pertarungan/pages/setup/components/processes/get_data.dart';
 import 'package:pertarungan/pages/setup/components/ui/alert_dialog.dart';
 import '../../pages/game/game.dart';
@@ -90,7 +91,7 @@ class _SetupState extends State<SetupScreen>
           tableId: 'juri_petarungan',
           total: false,
           queries: [
-            Query.select(['*','juri.nama_juri']),
+            Query.select(['*', 'juri.nama_juri']),
             Query.equal('petarungan', [value]),
           ],
         )
@@ -108,20 +109,35 @@ class _SetupState extends State<SetupScreen>
             throw AppwriteException('Connection timed out');
           },
         )
-        .then(
-          (value) {
-            print(value.rows.toString());
-            entries['juri'] = value.rows
-                .map(
-                  (e) => DropdownMenuEntry(
-                    value: e.$id,
-                    label: e.data['juri']['nama_juri'],
-                  ),
-                )
-                .toList();
-          },
-        );
+        .then((value) {
+          // print(value.rows.toString());
+          entries['juri'] = value.rows
+              .map(
+                (e) => DropdownMenuEntry(
+                  value: e.data['juri']['\$id'] as String,
+                  label: e.data['juri']['nama_juri'],
+                ),
+              )
+              .toList();
+        });
     setState(() => isLoadingJuri = false);
+  }
+
+  Future<int> getHowManyRounds({required String pertarunganID}) async {
+    try {
+      var response = await TablesDB(AppConfig().client).listRows(
+        databaseId: AppConfig().databaseID,
+        tableId: 'ronde_petarungan',
+        queries: [
+          Query.orderDesc('ronde_ke'),
+          Query.equal('id_petarungan', [pertarunganID]),
+        ],
+      );
+      return response.rows.first.data['ronde_ke'];
+    } on AppwriteException catch (e) {
+      displayDialog(context, 'AppwriteException', e.toString());
+    }
+    return 0;
   }
 
   @override
@@ -250,6 +266,7 @@ class _SetupState extends State<SetupScreen>
                           TextField(
                             enabled: _judgeController.text.isNotEmpty,
                             controller: _passkeyController,
+                            obscureText: true,
                             decoration: const InputDecoration(
                               labelText: "Masukkan Passkey",
                               fillColor: Colors.white,
@@ -297,11 +314,23 @@ class _SetupState extends State<SetupScreen>
                             );
                             return;
                           }
+                          int rounds = await getHowManyRounds(
+                            pertarunganID:
+                                selectedValues['pertarungan']!['id']!,
+                          );
                           if (!context.mounted) return;
-                          Navigator.pushReplacement(
+                          if (rounds < 1) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fetch game rounds error: round is less than one.')));
+                            throw AppwriteException();
+                          }
+                          Navigator.pushReplacementNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => GameScreen(),
+                            '/game',
+                            arguments: Arena(
+                              match: Data(id: selectedValues['pertandingan']!['id']!, value: selectedValues['pertandingan']!['value']!) ,
+                              fight: Data(id: selectedValues['pertarungan']!['id']!, value: selectedValues['pertarungan']!['value']!),
+                              judge: Data(id: selectedValues['juri']!['id']!, value: selectedValues['juri']!['value']!),
+                              rounds: [for (int i = 1; i <= rounds; i++) i],
                             ),
                           );
                         } on AppwriteException catch (e) {

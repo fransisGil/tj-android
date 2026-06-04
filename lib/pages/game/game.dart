@@ -17,22 +17,16 @@ class GameScreen extends StatefulWidget {
 class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    // try {
-    //   widget.arena;
-    // } catch (e) {
-    //   Navigator.popAndPushNamed(context, '/setup');
-    // }
-    // Arena? arena = widget.arena;
-    // Fighter red = arena!.redFighter;
-    // Fighter black = arena.blackFighter;
-
-    Arena arena = Arena(match: "Demo", fight: "Petarungan Demo", judge: "Juri Demo", rounds: [1, 2]  );
+    // push back to setup if current build is null
+    ModalRoute.of(context)?.settings.arguments ?? Navigator.pushReplacementNamed(context, '/setup');
+    
+    final Arena arena = ModalRoute.of(context)!.settings.arguments as Arena;
     Fighter red = arena.redFighter;
     Fighter black = arena.blackFighter;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pertandingan ${arena.match} - ${arena.fight} - Ronde ${arena.rounds[0]} - Juri ${arena.judge}',
+          'Pertandingan ${arena.match.value} - ${arena.fight.value} - Ronde ${arena.rounds[0]} - Juri ${arena.judge.value}',
           style: TextStyle(fontSize: MediaQuery.of(context).size.height * 0.035, fontWeight: FontWeight.bold),
         ),
         leadingWidth: 40,

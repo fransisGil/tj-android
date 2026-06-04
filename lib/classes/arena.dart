@@ -13,7 +13,7 @@ class Arena {
   );
   final PenaltyCounts _penaltyFactors = PenaltyCounts(beratFactor: 2);
 
-  final String match, fight, judge;
+  final Data match, fight, judge;
   final List<int> rounds;
   late Fighter redFighter;
   late Fighter blackFighter;
@@ -26,4 +26,9 @@ class Arena {
     redFighter.resetPoints();
     blackFighter.resetPoints();
   }
+}
+
+class Data {
+  String id, value;
+  Data({required this.id, required this.value});
 }
