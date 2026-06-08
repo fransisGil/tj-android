@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as appwritemodel;
 import 'package:flutter/material.dart';
@@ -68,23 +70,28 @@ class _SetupState extends State<SetupScreen>
 
   void getPertarungan(String value) async {
     setState(() => isLoadingPetarungan = true);
-    entries['pertarungan'] = await fetchData(
-      context: context,
-      tableID: 'petarungan',
-      columnID: 'nama_petarungan',
-      queries: [
-        Query.and([
-          Query.equal('nama_pertandingan', [value]),
-          Query.isNull('pemenang_petarungan'),
-        ]),
-      ],
-    );
+    entries['pertarungan'] =
+        await fetchData(
+          context: context,
+          tableID: 'petarungan',
+          columnID: 'nama_pertarungan',
+          queries: [
+            Query.and([
+              Query.equal('nama_pertandingan', [value]),
+              Query.isNull('pemenang_petarungan'),
+            ]),
+          ],
+        ).timeout(
+          Duration(seconds: 5),
+          onTimeout: () =>
+              displayDialog(context, 'Connection Timeout', 'Timeout'),
+        );
     setState(() => isLoadingPetarungan = false);
   }
 
   void getJuri(String value) async {
     setState(() => isLoadingJuri = true);
-    await TablesDB(AppConfig().client)
+    await AppConfig().tablesDB
         .listRows(
           databaseId: AppConfig().databaseID,
           tableId: 'juri_petarungan',
@@ -122,26 +129,56 @@ class _SetupState extends State<SetupScreen>
     setState(() => isLoadingJuri = false);
   }
 
-  Future<int> getHowManyRounds({required String pertarunganID}) async {
+  Future<List<Data>> getHowManyRounds({required String pertarunganID}) async {
     try {
       var response = await TablesDB(AppConfig().client).listRows(
         databaseId: AppConfig().databaseID,
         tableId: 'ronde_petarungan',
         queries: [
-          Query.orderDesc('ronde_ke'),
+          Query.orderAsc('ronde_ke'),
           Query.equal('id_petarungan', [pertarunganID]),
         ],
       );
-      return response.rows.first.data['ronde_ke'];
+      return response.rows
+          .map((e) => Data(id: e.$id, value: e.data['ronde_ke']))
+          .toList();
     } on AppwriteException catch (e) {
       displayDialog(context, 'AppwriteException', e.toString());
     }
-    return 0;
+    return [];
+  }
+
+  Future<Map<String, dynamic>> getSudut() async {
+    try {
+      var response = await AppConfig().tablesDB.listRows(
+        databaseId: AppConfig().databaseID,
+        tableId: 'sudut_petarungan',
+        queries: [
+          Query.equal('petarungan', selectedValues['pertarungan']!['id']),
+        ],
+      );
+      return response.toMap();
+    } on AppwriteException catch (e) {
+      displayDialog(context, 'Error', e.message!);
+    }
+    return {};
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: ElevatedButton(
+        onPressed: () async {
+          var response = await getSudut();
+          console.log(
+            ((response['rows'] as List<Map<String, dynamic>>)
+                    .where((element) => element['data'].containsValue('hitam'))
+                    .toList()[0]['\$id'])
+                .toString(),
+          );
+        },
+        child: Icon(Icons.refresh),
+      ),
       appBar: AppBar(title: Text("Pengaturan")),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -313,32 +350,51 @@ class _SetupState extends State<SetupScreen>
                             );
                             return;
                           }
-                          int rounds = await getHowManyRounds(
-                            pertarunganID:
-                                selectedValues['pertarungan']!['id']!,
+                          var sudut = await getSudut();
+                          AppConfig().account.createEmailPasswordSession(
+                            email: 'judges@judgeaccess.com',
+                            password: 'judgeaccess',
                           );
-                          if (!context.mounted) return;
-                          if (rounds < 1) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fetch game rounds error: round is less than one.')));
-                            throw AppwriteException();
-                          }
-                          AppConfig().account.createEmailPasswordSession(email: 'judges@judgeaccess.com', password: 'judgeaccess');
+                          if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
                             '/game',
                             arguments: Arena(
-                              match: Data(id: selectedValues['pertandingan']!['id']!, value: selectedValues['pertandingan']!['value']!) ,
-                              fight: Data(id: selectedValues['pertarungan']!['id']!, value: selectedValues['pertarungan']!['value']!),
-                              judge: Data(id: selectedValues['juri']!['id']!, value: selectedValues['juri']!['value']!),
-                              rounds: [for (int i = 1; i <= rounds; i++) i],
+                              match: Data(
+                                id: selectedValues['pertandingan']!['id']!,
+                                value:
+                                    selectedValues['pertandingan']!['value']!,
+                              ),
+                              fight: Data(
+                                id: selectedValues['pertarungan']!['id']!,
+                                value: selectedValues['pertarungan']!['value']!,
+                              ),
+                              judge: Data(
+                                id: selectedValues['juri']!['id']!,
+                                value: selectedValues['juri']!['value']!,
+                              ),
+                              rounds: await getHowManyRounds(
+                                pertarunganID:
+                                    selectedValues['pertarungan']!['id']!,
+                              ),
+                              sudutMerah: (sudut['rows'] as List<Map>)
+                                  .where(
+                                    (element) =>
+                                        element['data'].containsValue('merah'),
+                                  )
+                                  .toList()[0]['\$id']
+                                  .toString(),
+                              sudutHitam: (sudut['rows'] as List<Map>)
+                                  .where(
+                                    (element) =>
+                                        element['data'].containsValue('hitam'),
+                                  )
+                                  .toList()[0]['\$id']
+                                  .toString(),
                             ),
                           );
-                        } on AppwriteException catch (e) {
-                          displayDialog(
-                            context,
-                            'AppwriteException',
-                            e.toString(),
-                          );
+                        } catch (e) {
+                          displayDialog(context, 'Error', e.toString());
                         } finally {
                           setState(() {
                             isLoadingValid = false;

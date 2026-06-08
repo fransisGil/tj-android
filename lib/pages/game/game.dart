@@ -21,15 +21,15 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     // push back to setup if current build is null
     ModalRoute.of(context)?.settings.arguments ??
-        Navigator.pushReplacementNamed(context, '/');
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
 
     final Arena arena = ModalRoute.of(context)!.settings.arguments as Arena;
-    Fighter red = arena.redFighter!;
-    Fighter black = arena.blackFighter!;
+    Fighter red = arena.redFighter!.value;
+    Fighter black = arena.blackFighter!.value;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pertandingan ${arena.match.value} - ${arena.fight.value} - Ronde ${arena.rounds[0]} - Juri ${arena.judge.value}',
+          'Pertandingan ${arena.match.value} - ${arena.fight.value} - Ronde ${arena.rounds.first.value}',
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.height * 0.035,
             fontWeight: FontWeight.bold,
@@ -83,7 +83,10 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
                               Navigator.pop(dlgContext);
                               Navigator.popAndPushNamed(context, '/');
                             },
-                            child: Text('OK', style: TextStyle(color: Colors.black),),
+                            child: Text(
+                              'OK',
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       );

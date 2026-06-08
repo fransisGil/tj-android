@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pertarungan/backend/app_config.dart';
 import 'package:pertarungan/pages/setup/components/ui/alert_dialog.dart';
 
-Future<List<DropdownMenuEntry<String>>?> fetchData({
+Future<dynamic> fetchData({
   required BuildContext context,
   required String tableID,
   String? columnID,
@@ -11,7 +11,7 @@ Future<List<DropdownMenuEntry<String>>?> fetchData({
 }) async {
   try {
     List<DropdownMenuEntry<String>> dropdownList = [];
-    await TablesDB(AppConfig().client)
+    await AppConfig().tablesDB
         .listRows(
           databaseId: AppConfig().databaseID,
           tableId: tableID,
@@ -56,3 +56,4 @@ Future<List<DropdownMenuEntry<String>>?> fetchData({
     return [];
   }
 }
+
