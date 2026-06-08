@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pertarungan/pages/game/widgets/ui/point_buttons.dart';
+// import '../../../../assets/icons/icons/icons/';
 
 Widget interactiveBox({
   required BuildContext context,
@@ -40,6 +41,7 @@ Widget interactiveBox({
                     context: context,
                     label: "Muka",
                     constraints: constraints,
+                    // icon: Icon(ImageIcon(image))
                     icon: Symbols.cognition_2,
                     color: color,
                     action: faceAction,

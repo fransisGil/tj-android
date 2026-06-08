@@ -5,7 +5,6 @@ import 'package:pertarungan/backend/app_config.dart';
 import 'package:pertarungan/classes/arena.dart';
 import 'package:pertarungan/pages/setup/components/processes/get_data.dart';
 import 'package:pertarungan/pages/setup/components/ui/alert_dialog.dart';
-import '../../pages/game/game.dart';
 
 class SetupScreen extends StatefulWidget {
   const SetupScreen({super.key});
