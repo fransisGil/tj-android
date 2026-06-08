@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pertarungan/backend/app_config.dart';
 import 'package:pertarungan/classes/arena.dart';
 import 'package:pertarungan/classes/fighter.dart';
 
@@ -10,7 +11,7 @@ OverlayState showOverlay({
   required Fighter red,
   required Fighter black,
   required void Function(void Function()) stateSetter,
-  required Completer completer
+  required Completer completer,
 }) {
   OverlayState overlayState = Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -72,8 +73,7 @@ OverlayState showOverlay({
                       onPressed: () {
                         processRequest(
                           process: () async {
-                            // TODO: Tarungan Selesai; normal finish condition
-                            await Future.delayed(Duration(seconds: 5));
+                            sendRincian(arena: arena);
                             red.resetPoints();
                             black.resetPoints();
                           },
@@ -99,7 +99,7 @@ OverlayState showOverlay({
                           onPressed: () {
                             processRequest(
                               process: () async {
-                                await Future.delayed(Duration(seconds: 5));
+                                sendRincian(arena: arena, setPemenang: 'merah');
                                 red.resetPoints();
                                 black.resetPoints();
                               },
@@ -120,7 +120,7 @@ OverlayState showOverlay({
                           onPressed: () {
                             processRequest(
                               process: () async {
-                                await Future.delayed(Duration(seconds: 5));
+                                sendRincian(arena: arena, setPemenang: 'hitam');
                                 red.resetPoints();
                                 black.resetPoints();
                               },

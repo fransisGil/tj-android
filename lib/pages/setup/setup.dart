@@ -116,11 +116,10 @@ class _SetupState extends State<SetupScreen>
           },
         )
         .then((value) {
-          // print(value.rows.toString());
           entries['juri'] = value.rows
               .map(
                 (e) => DropdownMenuEntry(
-                  value: e.data['juri']['\$id'] as String,
+                  value: e.data['\$id'] as String,
                   label: e.data['juri']['nama_juri'],
                 ),
               )
@@ -169,13 +168,19 @@ class _SetupState extends State<SetupScreen>
     return Scaffold(
       floatingActionButton: ElevatedButton(
         onPressed: () async {
-          var response = await getSudut();
-          console.log(
-            ((response['rows'] as List<Map<String, dynamic>>)
-                    .where((element) => element['data'].containsValue('hitam'))
-                    .toList()[0]['\$id'])
-                .toString(),
-          );
+          var response =
+              (await AppConfig().tablesDB
+                      .listRows(
+                        databaseId: AppConfig().databaseID,
+                        tableId: 'juri_petarungan',
+                        queries: [
+                          Query.select(['*', 'juri.*']),
+                          Query.equal('\$id', [selectedValues['juri']!['id']]),
+                        ],
+                      )
+                      .timeout(Duration(seconds: 10)))
+                  .rows;
+          console.log(response.first.data['juri']['passkey'].toString());
         },
         child: Icon(Icons.refresh),
       ),
@@ -285,6 +290,7 @@ class _SetupState extends State<SetupScreen>
                                   },
                                   selectAction: (value) {
                                     if (value != null) {
+                                      console.log(value);
                                       selectedValues['juri'] = {
                                         'id': value,
                                         'value': entries['juri']!
@@ -333,14 +339,22 @@ class _SetupState extends State<SetupScreen>
                         }
                         late appwritemodel.Row getPasskey;
                         try {
-                          getPasskey = await TablesDB(AppConfig().client)
-                              .getRow(
-                                databaseId: AppConfig().databaseID,
-                                tableId: 'juri',
-                                rowId: selectedValues['juri']!['id']!,
-                              )
-                              .timeout(Duration(seconds: 10));
-                          if (getPasskey.data['passkey'] !=
+                          getPasskey =
+                              (await AppConfig().tablesDB
+                                      .listRows(
+                                        databaseId: AppConfig().databaseID,
+                                        tableId: 'juri_petarungan',
+                                        queries: [
+                                          Query.select(['*', 'juri.*']),
+                                          Query.equal('\$id', [
+                                            selectedValues['juri']!['id'],
+                                          ]),
+                                        ],
+                                      )
+                                      .timeout(Duration(seconds: 10)))
+                                  .rows
+                                  .first;
+                          if (getPasskey.data['juri']['passkey'] !=
                               _passkeyController.text) {
                             if (!context.mounted) return;
                             displayDialog(
@@ -351,10 +365,14 @@ class _SetupState extends State<SetupScreen>
                             return;
                           }
                           var sudut = await getSudut();
-                          AppConfig().account.createEmailPasswordSession(
-                            email: 'judges@judgeaccess.com',
-                            password: 'judgeaccess',
-                          );
+                          appwritemodel.User user = await getCurrentSession();
+                          if (user.$id.isNotEmpty) {
+                          } else {
+                            AppConfig().account.createEmailPasswordSession(
+                              email: 'judges@judgeaccess.com',
+                              password: 'judgeaccess',
+                            );
+                          }
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
@@ -393,8 +411,12 @@ class _SetupState extends State<SetupScreen>
                                   .toString(),
                             ),
                           );
-                        } catch (e) {
-                          displayDialog(context, 'Error', e.toString());
+                        } catch (e, stacktrace) {
+                          displayDialog(
+                            context,
+                            'Error',
+                            '${e.toString()}\n${stacktrace.toString()}',
+                          );
                         } finally {
                           setState(() {
                             isLoadingValid = false;

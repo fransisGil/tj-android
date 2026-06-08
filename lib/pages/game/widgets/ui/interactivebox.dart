@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:pertarungan/pages/game/widgets/ui/point_buttons.dart';
-// import '../../../../assets/icons/icons/icons/';
 
 Widget interactiveBox({
   required BuildContext context,
