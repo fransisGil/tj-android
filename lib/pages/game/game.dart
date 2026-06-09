@@ -1,9 +1,6 @@
 // Flutter packages
 import 'dart:async';
-import 'dart:developer' as console;
-import 'package:appwrite/models.dart' as appwritemodel;
 import 'package:flutter/material.dart';
-import 'package:pertarungan/backend/app_config.dart';
 import '../../classes/arena.dart';
 import '../setup/setup.dart';
 
@@ -44,20 +41,12 @@ class _GameState extends State<GameScreen> with SingleTickerProviderStateMixin {
               context,
               MaterialPageRoute(builder: (context) => SetupScreen()),
             );
-            // appwritemodel.User user = await getCurrentSession();
-            // console.log(user.name);
-            // console.log(arena.judge.id);
-            // console.log(user.)
           },
           style: ElevatedButton.styleFrom(
-            // shape: BeveledRectangleBorder(
-            //   side: BorderSide(color: Colors.black)
             // ),
             foregroundColor: Colors.black,
-            // backgroundColor: Colors.black
           ),
           child: Icon(Icons.close),
-          // child: Text('BALIK', style: TextStyle(color: Colors.black)),
         ),
         actions: [
           TextButton(

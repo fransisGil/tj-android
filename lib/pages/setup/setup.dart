@@ -128,14 +128,17 @@ class _SetupState extends State<SetupScreen>
     setState(() => isLoadingJuri = false);
   }
 
-  Future<List<Data>> getHowManyRounds({required String pertarunganID}) async {
+  Future<List<Data>> getHowManyRounds({required String pertarunganID, required String juriID}) async {
     try {
       var response = await TablesDB(AppConfig().client).listRows(
         databaseId: AppConfig().databaseID,
         tableId: 'ronde_petarungan',
         queries: [
           Query.orderAsc('ronde_ke'),
-          Query.equal('id_petarungan', [pertarunganID]),
+          Query.and([
+            Query.equal('id_petarungan', [pertarunganID]),
+            Query.equal('juri_pertrungan', [juriID])
+          ])
         ],
       );
       return response.rows
@@ -365,14 +368,10 @@ class _SetupState extends State<SetupScreen>
                             return;
                           }
                           var sudut = await getSudut();
-                          appwritemodel.User user = await getCurrentSession();
-                          if (user.$id.isNotEmpty) {
-                          } else {
-                            AppConfig().account.createEmailPasswordSession(
-                              email: 'judges@judgeaccess.com',
-                              password: 'judgeaccess',
-                            );
-                          }
+                          AppConfig().account.createEmailPasswordSession(
+                            email: 'judges@judgeaccess.com',
+                            password: 'judgeaccess',
+                          );
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
@@ -394,6 +393,7 @@ class _SetupState extends State<SetupScreen>
                               rounds: await getHowManyRounds(
                                 pertarunganID:
                                     selectedValues['pertarungan']!['id']!,
+                                juriID: selectedValues['juri']!['id']!
                               ),
                               sudutMerah: (sudut['rows'] as List<Map>)
                                   .where(
